@@ -32,9 +32,37 @@ any enhancements or changes you would make, given the time.
 
 ## Solution
 
-WebApi in .net 9, using minimal apis approach and vertical slice architecture.
+The solution is a .Net 9 WebApi, using minimal apis approach and vertical slice architecture.
+Hybrid Cache is used to limit calls to Hacker Rank API. It is used as in-memory cache with an option of adding distributed cache in future, in case the service have multiple replicas deployed.
 
 ### Local setup
 
 1. .Net SDK 9 and Hosting bundle must be installed. Get appropriate installers from [official download page](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
-1. 
+1. IDE or code editor such as Visual Studio, Rider or Visual Studio Code to send requests using samples from `santa.api.http`. Can be omitted if API testing will be done using other tools.
+
+### Running the Project
+
+#### Rider or Visual Studio 
+
+One option is to open the IDE and run `santa.api` project using `http` profile. In case of using `https` profile, in order to test the API, url in `santa.api.http` file must be updated to match the url of the started service.  
+
+#### Terminal
+
+Another option is to navigate to the folder containing `santa.api.csproj` and execute `dotnet run --project santa.api.csproj` to start the application.
+
+### Testing the API
+
+Sample API requests are available in `santa.api.http`. Those can be executed from IDEs. `@santaapi_HostAddress` variable should match URL under which the service is available. One of following options can be used to test the API:
+
+- Rider 2024.3 and Visual Studio 2022 have a built-in support for executing requests in *.http files
+- Visual Studio Code extension might be required to execute requests from *.http files (REST Client extension can be used)
+- sending requests through other tools to `http://localhost:5223/beststories?numberOfStories=200`, as long as the service is started using `http` profile under port 5223.
+
+## Possible improvements
+
+1. Preload cache on application start to reduce the time it takes to deliver response to a first request
+1. Add distributed caching if there will be multiple instances of the service
+1. Add tracing to have better overview over the system (if additional components were added)
+1. Add logging to have better overview over the application
+1. Adjust resilience options when calling 3rd party API
+1. Adjust cache length to be appropriate for the frequency of updates
