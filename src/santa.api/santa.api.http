@@ -1,6 +1,6 @@
-@santa.api_HostAddress = http://localhost:5223
+@santaapi_HostAddress = http://localhost:5223
 
-GET {{santa.api_HostAddress}}/weatherforecast/
+GET {{santaapi_HostAddress}}/beststories/
 Accept: application/json
 
 ###
