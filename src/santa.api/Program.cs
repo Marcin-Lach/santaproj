@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddRefitClient<IHackerRankApi>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0"));
+#pragma warning disable EXTEXP0018
+builder.Services.AddHybridCache();
+#pragma warning restore EXTEXP0018
 
 var app = builder.Build();
 
