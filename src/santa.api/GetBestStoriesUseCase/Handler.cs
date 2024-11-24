@@ -36,23 +36,25 @@ public static partial class GetBestStories
     private static async Task<BestStory> GetStoryDetails(long storyId, IHackerRankApi hackerRankApi,
         HybridCache cache)
     {
-        var storyDetails = await cache.GetOrCreateAsync(
+        return await cache.GetOrCreateAsync(
             $"hr-story-{storyId}",
             (hackerRankApi, bestStoriesId: storyId),
-            async (state, entry) => await state.hackerRankApi.GetStoryDetails(state.bestStoriesId),
+            async (state, entry) =>
+            {
+                var storyDetails = await state.hackerRankApi.GetStoryDetails(state.bestStoriesId);
+                return new BestStory(
+                    storyDetails.Title,
+                    storyDetails.Url,
+                    storyDetails.By,
+                    ConvertFromUnixTime(storyDetails.Time),
+                    storyDetails.Score,
+                    storyDetails.kids.Length);
+            },
             new HybridCacheEntryOptions
             {
                 LocalCacheExpiration = TimeSpan.FromMinutes(30),
             }, 
             ["hacker-rank", "hacker-rank-stories"]);
-
-        return new BestStory(
-            storyDetails.Title,
-            storyDetails.Url,
-            storyDetails.By,
-            ConvertFromUnixTime(storyDetails.Time),
-            storyDetails.Score,
-            storyDetails.kids.Length);
     }
 
     private static DateTime ConvertFromUnixTime(long unixTime)
