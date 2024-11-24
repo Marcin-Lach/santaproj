@@ -8,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddRefitClient<IHackerRankApi>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0"));
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri("https://hacker-news.firebaseio.com/v0");
+    }).AddStandardResilienceHandler();
 #pragma warning disable EXTEXP0018
 builder.Services.AddHybridCache();
 #pragma warning restore EXTEXP0018
