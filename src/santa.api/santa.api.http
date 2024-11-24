@@ -1,6 +1,6 @@
 @santaapi_HostAddress = http://localhost:5223
 
-GET {{santaapi_HostAddress}}/beststories?numberOfStories=2
+GET {{santaapi_HostAddress}}/beststories?numberOfStories=200
 Accept: application/json
 
 ###

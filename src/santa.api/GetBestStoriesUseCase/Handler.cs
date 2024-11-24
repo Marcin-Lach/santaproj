@@ -1,5 +1,4 @@
 ﻿using santa.api.GitHubService;
-using santa.api.GitHubService.Models;
 
 namespace santa.api.GetBestStoriesUseCase;
 
@@ -9,14 +8,16 @@ public static partial class GetBestStories
     {
         var bestStoriesIds = await hackerRankApi.GetBestStoriesIds();
 
-        var bestStories = new List<BestStory>();
-
+        var getStoryDetailsTasks = new List<Task<BestStory>>();
+        
         for (var i = 0; i < numberOfStories; i++)
         {
-            bestStories.Add(await GetStoryDetails(bestStoriesIds[i], hackerRankApi));
+            getStoryDetailsTasks.Add(GetStoryDetails(bestStoriesIds[i], hackerRankApi));
         }
         
-        return Results.Ok(bestStories);
+        await Task.WhenAll(getStoryDetailsTasks);
+        
+        return Results.Ok(getStoryDetailsTasks.Select(x => x.Result));
     }
 
     private static async Task<BestStory> GetStoryDetails(long bestStoriesId, IHackerRankApi hackerRankApi)
