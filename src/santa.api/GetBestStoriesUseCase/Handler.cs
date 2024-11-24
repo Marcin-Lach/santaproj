@@ -1,4 +1,4 @@
-﻿using santa.api.GitHubService;
+﻿using santa.api.HackerRankApiService;
 
 namespace santa.api.GetBestStoriesUseCase;
 

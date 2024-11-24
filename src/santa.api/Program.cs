@@ -1,6 +1,6 @@
 using Refit;
 using santa.api.GetBestStoriesUseCase;
-using santa.api.GitHubService;
+using santa.api.HackerRankApiService;
 
 var builder = WebApplication.CreateBuilder(args);
 

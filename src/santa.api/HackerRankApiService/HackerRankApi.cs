@@ -1,7 +1,7 @@
 ﻿using Refit;
-using santa.api.GitHubService.Models;
+using santa.api.HackerRankApiService.Models;
 
-namespace santa.api.GitHubService;
+namespace santa.api.HackerRankApiService;
 
 [Headers("accept: application/json")]
 public interface IHackerRankApi
