@@ -13,9 +13,9 @@ public static class GetBestStories
         }
     }
 
-    private static IResult Handler(HttpContext context)
+    private static IResult Handler(int numberOfStories, HttpContext context)
     {
-        var bestStories = Enumerable.Range(1, 5).Select(index =>
+        var bestStories = Enumerable.Range(1, numberOfStories).Select(index =>
                 new BestStory
                 (
                     $"Title{index}",
