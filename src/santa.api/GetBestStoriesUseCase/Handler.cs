@@ -8,6 +8,11 @@ public static partial class GetBestStories
     private static async Task<IResult> Handler(int numberOfStories, HttpContext context, IHackerRankApi hackerRankApi,
         HybridCache cache)
     {
+        if (numberOfStories <= 0)
+        {
+            return Results.BadRequest("Number of stories must be greater than 0");
+        }
+        
         var bestStoriesIds = await GetBestStoriesIds(hackerRankApi, cache);
 
         var getStoryDetailsTasks = new List<Task<BestStory>>();

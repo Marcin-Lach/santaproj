@@ -4,3 +4,6 @@ GET {{santaapi_HostAddress}}/beststories?numberOfStories=200
 Accept: application/json
 
 ###
+
+GET {{santaapi_HostAddress}}/beststories?numberOfStories=-200
+Accept: application/json
