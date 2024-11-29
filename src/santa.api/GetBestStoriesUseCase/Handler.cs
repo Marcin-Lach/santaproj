@@ -15,14 +15,47 @@ public static partial class GetBestStories
         
         var bestStoriesIds = await GetBestStoriesIds(hackerRankApi, cache);
 
+        var bestStories = await GetStoryDetailsTasks(numberOfStories, hackerRankApi, cache, bestStoriesIds);
+
+        return Results.Ok(bestStories);
+        
+        // streaming implementation, need to add returning a stream instead of single OK result
+        // var bestStoriesStreamed = new List<BestStory>();
+        // await foreach (var story in GetStoryDetailsTasksWhenAny(numberOfStories, hackerRankApi, cache, bestStoriesIds))
+        // {
+        //      // somewhere here we should stream the response
+        //     bestStoriesStreamed.Add(story);
+        // }
+    }
+
+    private static async IAsyncEnumerable<BestStory> GetStoryDetailsTasksWhenAny(int numberOfStories, IHackerRankApi hackerRankApi, HybridCache cache,
+        long[] bestStoriesIds)
+    {
         var getStoryDetailsTasks = new List<Task<BestStory>>();
 
         for (var i = 0; i < numberOfStories; i++)
             getStoryDetailsTasks.Add(GetStoryDetails(bestStoriesIds[i], hackerRankApi, cache));
 
-        await Task.WhenAll(getStoryDetailsTasks);
+        while (getStoryDetailsTasks.Any())
+        {
+            var resultTask = await Task.WhenAny(getStoryDetailsTasks);
+            getStoryDetailsTasks.Remove(resultTask);
+         
+            yield return resultTask.Result;
+        }
+    }
+    
+    private static async Task<List<BestStory>> GetStoryDetailsTasks(int numberOfStories, IHackerRankApi hackerRankApi, HybridCache cache,
+        long[] bestStoriesIds)
+    {
+        var getStoryDetailsTasks = new List<Task<BestStory>>();
 
-        return Results.Ok(getStoryDetailsTasks.Select(x => x.Result));
+        for (var i = 0; i < numberOfStories; i++)
+            getStoryDetailsTasks.Add(GetStoryDetails(bestStoriesIds[i], hackerRankApi, cache));
+
+        
+        await Task.WhenAll(getStoryDetailsTasks);
+        return getStoryDetailsTasks.Select(x => x.Result).ToList();
     }
 
     private static async Task<long[]> GetBestStoriesIds(IHackerRankApi hackerRankApi, HybridCache cache)
